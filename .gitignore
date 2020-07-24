@@ -1,0 +1,7 @@
+tags
+tagfilelist.txt
+*.jou
+*.log
+*.str
+.Xil/
+**/.Xil
