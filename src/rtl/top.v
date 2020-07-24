@@ -1,6 +1,10 @@
 module transmiter(
-input CK_SC,
-input rst,
+
+input CK_SC, //5GHz Clock in 
+input set_new_data, //rst signal for set new data
+
+//frame bits:
+//3 bits data
 input ON_OFF_otabg,
 input ON_OFF_dac, 
 input small_dac,
@@ -15,7 +19,7 @@ input ramp_10bit,
 // 128 bits mask
 input [127:0] mask_OR_ch,
 //input [63:0] mask_OR1_ch,
-// 34 bits global configuration data
+//34 bits global configuration data
 input cmd_CK_mux,
 input d1_d2,
 input inv_discriADC,
@@ -51,19 +55,18 @@ input swb_buf_250f,
 input cmd_fsb,
 input cmd_ss,
 input cmd_fsu,
-// 576 bits gain data
-//input [63:0] cmd_SUM,
+//576 bits gain data
 input [575:0] GAIN, //[7:0][63:0] + [63:0]cmd_SUM
-// 64 bits ctest data
+//64 bits ctest data
 input [63:0] Ctest_ch,
-output reg D_SC,
-output reg ss
+
+output reg D_SC //series output bits
 ); 
-reg [828:0] D_SC_buff = 0;
-reg [9:0] rt_Bit_Index = 0;
+reg [828:0] D_SC_buff = 0; //bufor for data frame
+reg [9:0] rt_Bit_Index = 0; //shift register index
     
 
-always @(posedge rst) begin
+always @(posedge set_new_data) begin //for every rts signal we packing full new input data to frame
     D_SC_buff[0] <= ON_OFF_otabg;
     D_SC_buff[1] <= ON_OFF_dac;
     D_SC_buff[2] <= small_dac;
@@ -112,18 +115,8 @@ always @(posedge rst) begin
     D_SC_buff[828:765] <= Ctest_ch[63:0]; 
 end
 
-always @(negedge CK_SC) begin  
-    
-    D_SC <= D_SC_buff[0]; //Data is shifted out least-significant bit first
-    D_SC_buff[827:0] <= D_SC_buff[828:1]; //sgift next bit into place
-    //check if we have send all bits
-    if (rt_Bit_Index <828) begin
-        rt_Bit_Index <= rt_Bit_Index+1;
-        ss <= 0;
-        end
-    else begin
-        rt_Bit_Index <=0; //recive of a uart byte complete here
-        ss <= 1;
-        end
-end
+always @(negedge CK_SC) begin //for every Clk signal we sending one bit to MAROC
+    D_SC <= D_SC_buff[0]; //data is shifted out least-significant bit first
+    D_SC_buff[827:0] <= D_SC_buff[828:1]; //shift next bit into place
+    end
 endmodule

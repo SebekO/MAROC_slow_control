@@ -58,18 +58,73 @@ reg [575:0] GAIN; //[7:0][63:0] + [63:0]cmd_SUM
 // 64 bits ctest data
 reg [63:0] Ctest_ch;
 
-reg rst;
-wire ss;
-reg rs;
+reg set_new_data; //rst signal for set new data
+///buff data
+reg [828:0] tmp_D_SC_buff = 0; //tmp buffor which include generated frame for comparison 
 
-reg [828:0] tmp_D_SC_buff;
+reg [828:0] r_Rx_Byte = 0;
 
-reg [828:0] r_Rx_Byte;
+reg TX_succes = 0; //transmisiosn succes flag
 
-reg TX_succes;
-reg [9:0] rr_Bit_Index;
+reg [9:0] rr_Bit_Index; //shift register index
+//3 bits data
+reg ON_OFF_otabg_buff;
+reg ON_OFF_dac_buff; 
+reg small_dac_buff;
+// 2x 10 bits data
+reg [9:0] DAC2_buff;
+reg [9:0] DAC1_buff;
+//4 bits data
+reg enb_outADC_buff;
+reg inv_startCmptGray_buff;
+reg ramp_8bit_buff;
+reg ramp_10bit_buff;
+// 128 bits mask
+reg [127:0] mask_OR_ch_buff;
+//reg [63:0] mask_OR1_ch_buff;
+// 34 bits global configuration data
+reg cmd_CK_mux_buff;
+reg d1_d2_buff;
+reg inv_discriADC_buff;
+reg polar_discri_buff;
+reg Enb_tristate_buff;
+reg valid_dc_fsb2_buff;
+reg sw_fsb2_50f_buff;
+reg sw_fsb2_100f_buff;
+reg sw_fsb2_100k_buff;
+reg sw_fsb2_50k_buff;
+reg valid_dc_fs_buff;
+reg cmd_fsb_fsu_buff;
+reg sw_fsb1_50f_buff;
+reg sw_fsb1_100f_buff;
+reg sw_fsb1_100k_buff;
+reg sw_fsb1_50k_buff;
+reg sw_fsu_100k_buff;
+reg sw_fsu_50k_buff;
+reg sw_fsu_25k_buff;
+reg sw_fsu_40f_buff;
+reg sw_fsu_20f_buff;
+reg H1H2_choice_buff;
+reg EN_ADC_buff;
+reg sw_ss_1200f_buff;
+reg sw_ss_600f_buff;
+reg sw_ss_300f_buff;
+reg ON_OFF_ss_buff;
+reg swb_buf_2p_buff;
+reg swb_buf_1p_buff;
+reg swb_buf_500f_buff;
+reg swb_buf_250f_buff;
+reg cmd_fsb_buff;
+reg cmd_ss_buff;
+reg cmd_fsu_buff;
+// 576 bits gain data
+//reg [63:0] cmd_SUM_buff;
+reg [575:0] GAIN_buff; //[7:0][63:0] + [63:0]cmd_SUM
+// 64 bits ctest data
+reg [63:0] Ctest_ch_buff;
 
-transmiter uut1(
+
+transmiter uut( //prototype unit under test function
 .ON_OFF_otabg(ON_OFF_otabg),
 .ON_OFF_dac(ON_OFF_dac), 
 .small_dac(small_dac),
@@ -118,64 +173,62 @@ transmiter uut1(
 .Ctest_ch(Ctest_ch),
 .D_SC(D_SC),
 .CK_SC(CK_SC),
-.rst(rst),
-.ss(ss)
+.set_new_data(set_new_data)
 );
 
 initial begin 
-    $srandom(10);
-    CK_SC = 0;
-    rst = 0;
-    r_Rx_Byte = 0;
-    tmp_D_SC_buff = 0;
-    TX_succes = 0;
-    
+    $srandom(10); //generate seed for random function
+    CK_SC = 1; //set Clk to 0
+    set_new_data = 1; //set rts to 0
+    //random generating input bit state for test bench
     ON_OFF_otabg = $urandom_range(1,0);
-    ON_OFF_dac =  $urandom_range(1,0);
-    small_dac = $urandom_range(1,0);
-    DAC2 = $urandom_range(1,0);
-    DAC1 = $urandom_range(1,0);
-    enb_outADC = $urandom_range(1,0);
-    inv_startCmptGray = $urandom_range(1,0);
-    ramp_8bit = $urandom_range(1,0);
-    ramp_10bit = $urandom_range(1,0);
-    mask_OR_ch = {$urandom(),$urandom(),$urandom(),$urandom()};
-    cmd_CK_mux = $urandom_range(1,0);
-    d1_d2 = $urandom_range(1,0);
-    inv_discriADC = $urandom_range(1,0);
-    polar_discri = $urandom_range(1,0);
-    Enb_tristate = $urandom_range(1,0);
-    valid_dc_fsb2 = $urandom_range(1,0);
-    sw_fsb2_50f = $urandom_range(1,0);
-    sw_fsb2_100f = $urandom_range(1,0);
-    sw_fsb2_100k = $urandom_range(1,0);
-    sw_fsb2_50k = $urandom_range(1,0);
-    valid_dc_fs = $urandom_range(1,0);
-    cmd_fsb_fsu = $urandom_range(1,0);
-    sw_fsb1_50f = $urandom_range(1,0);
-    sw_fsb1_100f = $urandom_range(1,0);
-    sw_fsb1_100k = $urandom_range(1,0);
-    sw_fsb1_50k = $urandom_range(1,0);
-    sw_fsu_100k = $urandom_range(1,0);
-    sw_fsu_50k = $urandom_range(1,0);
-    sw_fsu_25k = $urandom_range(1,0);
-    sw_fsu_40f = $urandom_range(1,0);
-    sw_fsu_20f = $urandom_range(1,0);
-    H1H2_choice = $urandom_range(1,0);
-    EN_ADC = $urandom_range(1,0);
-    sw_ss_1200f = $urandom_range(1,0);
-    sw_ss_600f = $urandom_range(1,0);
-    sw_ss_300f = $urandom_range(1,0);
-    ON_OFF_ss = $urandom_range(1,0);
-    swb_buf_2p = $urandom_range(1,0);
-    swb_buf_1p = $urandom_range(1,0);
-    swb_buf_500f = $urandom_range(1,0);
-    swb_buf_250f = $urandom_range(1,0);
-    cmd_fsb = $urandom_range(1,0);
-    cmd_ss = $urandom_range(1,0);
-    cmd_fsu = $urandom_range(1,0);
-    GAIN = {$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom()};
-    Ctest_ch = {$urandom(),$urandom()};
+    assign ON_OFF_dac =  $urandom_range(1,0);
+    assign small_dac = $urandom_range(1,0);
+    assign DAC2 = $urandom_range(1,0);
+    assign DAC1 = $urandom_range(1,0);
+    assign enb_outADC = $urandom_range(1,0);
+    assign inv_startCmptGray = $urandom_range(1,0);
+    assign ramp_8bit = $urandom_range(1,0);
+    assign ramp_10bit = $urandom_range(1,0);
+    assign mask_OR_ch = {$urandom(),$urandom(),$urandom(),$urandom()};
+    assign cmd_CK_mux = $urandom_range(1,0);
+    assign d1_d2 = $urandom_range(1,0);
+    assign inv_discriADC = $urandom_range(1,0);
+    assign polar_discri = $urandom_range(1,0);
+    assign Enb_tristate = $urandom_range(1,0);
+    assign valid_dc_fsb2 = $urandom_range(1,0);
+    assign sw_fsb2_50f = $urandom_range(1,0);
+    assign sw_fsb2_100f = $urandom_range(1,0);
+    assign sw_fsb2_100k = $urandom_range(1,0);
+    assign sw_fsb2_50k = $urandom_range(1,0);
+    assign valid_dc_fs = $urandom_range(1,0);
+    assign cmd_fsb_fsu = $urandom_range(1,0);
+    assign sw_fsb1_50f = $urandom_range(1,0);
+    assign sw_fsb1_100f = $urandom_range(1,0);
+    assign sw_fsb1_100k = $urandom_range(1,0);
+    assign sw_fsb1_50k = $urandom_range(1,0);
+    assign sw_fsu_100k = $urandom_range(1,0);
+    assign sw_fsu_50k = $urandom_range(1,0);
+    assign sw_fsu_25k = $urandom_range(1,0);
+    assign sw_fsu_40f = $urandom_range(1,0);
+    assign sw_fsu_20f = $urandom_range(1,0);
+    assign H1H2_choice = $urandom_range(1,0);
+    assign EN_ADC = $urandom_range(1,0);
+    assign sw_ss_1200f = $urandom_range(1,0);
+    assign sw_ss_600f = $urandom_range(1,0);
+    assign sw_ss_300f = $urandom_range(1,0);
+    assign ON_OFF_ss = $urandom_range(1,0);
+    assign swb_buf_2p = $urandom_range(1,0);
+    assign swb_buf_1p = $urandom_range(1,0);
+    assign swb_buf_500f = $urandom_range(1,0);
+    assign swb_buf_250f = $urandom_range(1,0);
+    assign cmd_fsb = $urandom_range(1,0);
+    assign cmd_ss = $urandom_range(1,0);
+    assign cmd_fsu = $urandom_range(1,0);
+    assign GAIN = {$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom(),$urandom()};
+    
+    Ctest_ch = 1;
+    //writing state to tmp buff for later comparison
     tmp_D_SC_buff[0] <= ON_OFF_otabg;
     tmp_D_SC_buff[1] <= ON_OFF_dac;
     tmp_D_SC_buff[2] <= small_dac;
@@ -222,32 +275,21 @@ initial begin
     tmp_D_SC_buff[188] <= cmd_fsu;
     tmp_D_SC_buff[764:189] <= GAIN[575:0];
     tmp_D_SC_buff[828:765] <= Ctest_ch[63:0]; 
-    rst = 1;
+     //setting rst to 1 for uploading new values to MAROC
 end
 always begin
-    TX_succes <=0;
-    rst = 0;
-    #200  CK_SC = !CK_SC;
+    TX_succes <=0; //setting success transmision flag to 0
+    set_new_data = 0; //setting rst to 0 for stopped generating new values
+    #100  CK_SC = !CK_SC; //generating 5Ghz clock
 end
-always @(negedge CK_SC) begin 
-    r_Rx_Byte[828] <= D_SC;
-    r_Rx_Byte[827:0] <= r_Rx_Byte[828:1];
-    if (rr_Bit_Index < 830) begin
-        rr_Bit_Index <= rr_Bit_Index+1;
-        rs <=0;
-        end
-    else begin
-        rr_Bit_Index <=0;
-        rs <= 1;
-    end
-end
-
-always @(posedge rs) begin
-    if(tmp_D_SC_buff == r_Rx_Byte) TX_succes <= 1;
+always @(negedge CK_SC) begin //for every Clk signal we received one bit to from uut module
+    if(tmp_D_SC_buff == r_Rx_Byte) TX_succes <= 1; //if data is correct we set transmision flag to 1
     else TX_succes <= 0;
+    r_Rx_Byte[828] <= D_SC; //data is shifted out least-significant bit first
+    r_Rx_Byte[827:0] <= r_Rx_Byte[828:1]; //shift next bit into place
 end
-always @(negedge rs) begin
-    rst = 1;
+always @(negedge TX_succes) begin //if we received data successful we can generate new one data for frame
+    set_new_data = 1;
     ON_OFF_otabg = $urandom_range(1,0);
     ON_OFF_dac =  $urandom_range(1,0);
     small_dac = $urandom_range(1,0);
