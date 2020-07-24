@@ -2,6 +2,7 @@
 module testb();
 reg CK_SC;
 wire D_SC;
+
 //3 bits data
 reg ON_OFF_otabg;
 reg ON_OFF_dac; 
@@ -58,13 +59,14 @@ reg [575:0] GAIN; //[7:0][63:0] + [63:0]cmd_SUM
 // 64 bits ctest data
 reg [63:0] Ctest_ch;
 
-reg set_new_data; //rst signal for set new data
+
+
+
+reg set_new_data; //flag signal for set new data
 ///buff data
-reg [828:0] tmp_D_SC_buff = 0; //tmp buffor which include generated frame for comparison 
-
-reg [828:0] r_Rx_Byte = 0;
-
-reg TX_succes = 0; //transmisiosn succes flag
+reg [828:0] tmp_D_SC_buff; //tmp buffor which include generated frame for comparison 
+reg [828:0] r_Rx_Byte;
+reg TX_succes; //transmisiosn succes flag
 
 reg [9:0] rr_Bit_Index; //shift register index
 //3 bits data
@@ -178,6 +180,9 @@ transmiter uut( //prototype unit under test function
 
 initial begin 
     $srandom(10); //generate seed for random function
+    r_Rx_Byte = 0;
+    tmp_D_SC_buff = 0;
+    TX_succes = 0;
     CK_SC = 1; //set Clk to 0
     set_new_data = 1; //set rts to 0
     //random generating input bit state for test bench

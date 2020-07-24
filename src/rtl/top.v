@@ -66,7 +66,7 @@ reg [828:0] D_SC_buff = 0; //bufor for data frame
 reg [9:0] rt_Bit_Index = 0; //shift register index
     
 
-always @(posedge set_new_data) begin //for every rts signal we packing full new input data to frame
+always @(posedge set_new_data) begin //for every flag signal we packing full new input data to frame
     D_SC_buff[0] <= ON_OFF_otabg;
     D_SC_buff[1] <= ON_OFF_dac;
     D_SC_buff[2] <= small_dac;
