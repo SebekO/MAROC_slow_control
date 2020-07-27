@@ -65,68 +65,10 @@ wire D_SC; //series output bits
 wire RSTn_SC;
 wire CK_SC; //5GHZ clock out
 
-
 ///local data
 reg [828:0] tmp_D_SC; //tmp buffor which include generated frame for comparison 
 reg [828:0] read_D_SC;
 reg TX_succes; //transmisiosn succes flag
-
-
-//3 bits data
-reg ON_OFF_otabg_buff;
-reg ON_OFF_dac_buff; 
-reg small_dac_buff;
-// 2x 10 bits data
-reg [9:0] DAC2_buff;
-reg [9:0] DAC1_buff;
-//4 bits data
-reg enb_outADC_buff;
-reg inv_startCmptGray_buff;
-reg ramp_8bit_buff;
-reg ramp_10bit_buff;
-// 128 bits mask
-reg [127:0] mask_OR_ch_buff;
-//reg [63:0] mask_OR1_ch_buff;
-// 34 bits global configuration data
-reg cmd_CK_mux_buff;
-reg d1_d2_buff;
-reg inv_discriADC_buff;
-reg polar_discri_buff;
-reg Enb_tristate_buff;
-reg valid_dc_fsb2_buff;
-reg sw_fsb2_50f_buff;
-reg sw_fsb2_100f_buff;
-reg sw_fsb2_100k_buff;
-reg sw_fsb2_50k_buff;
-reg valid_dc_fs_buff;
-reg cmd_fsb_fsu_buff;
-reg sw_fsb1_50f_buff;
-reg sw_fsb1_100f_buff;
-reg sw_fsb1_100k_buff;
-reg sw_fsb1_50k_buff;
-reg sw_fsu_100k_buff;
-reg sw_fsu_50k_buff;
-reg sw_fsu_25k_buff;
-reg sw_fsu_40f_buff;
-reg sw_fsu_20f_buff;
-reg H1H2_choice_buff;
-reg EN_ADC_buff;
-reg sw_ss_1200f_buff;
-reg sw_ss_600f_buff;
-reg sw_ss_300f_buff;
-reg ON_OFF_ss_buff;
-reg swb_buf_2p_buff;
-reg swb_buf_1p_buff;
-reg swb_buf_500f_buff;
-reg swb_buf_250f_buff;
-reg cmd_fsb_buff;
-reg cmd_ss_buff;
-reg cmd_fsu_buff;
-// 576 bits gain data
-//reg [63:0] cmd_SUM_buff;
-reg [575:0] GAIN_buff; //[7:0][63:0] + [63:0]cmd_SUM
-// 64 bits ctest data
-reg [63:0] Ctest_ch_buff;
 
 
 transmiter uut( //prototype unit under test function
