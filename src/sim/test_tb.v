@@ -130,16 +130,17 @@ transmiter uut( //prototype unit under test function
 );
 
 initial begin 
-	CK_SC = 1; //set Clk to 1
+	CK_in = 1; //set Clk to 1
 	
     read_D_SC[828:0] = 0;
-    tmp_D_SC[828:0] = 0;
+    tmp_D_SC[828:0] = -1;
     TX_succes = 0;
-    
-	state = 1;
+ 
 	rst = 1;
-	#10 
+	#150 
 	rst = 0;
+	
+	state = 1;
 	
 	$srandom(10); //generate seed for random function
     //random generating input bit state for test bench
@@ -152,7 +153,7 @@ initial begin
     inv_startCmptGray = $urandom_range(1,0);
     ramp_8bit = $urandom_range(1,0);
     ramp_10bit = $urandom_range(1,0);
-    mask_OR_ch = {4{random()}};
+    mask_OR_ch = {4{$urandom}};
     cmd_CK_mux = $urandom_range(1,0);
     d1_d2 = $urandom_range(1,0);
     inv_discriADC = $urandom_range(1,0);
@@ -187,8 +188,8 @@ initial begin
     cmd_fsb = $urandom_range(1,0);
     cmd_ss = $urandom_range(1,0);
     cmd_fsu = $urandom_range(1,0);
-    GAIN = {18{random()}};
-    Ctest_ch = {2{random()}};
+    GAIN = {18{$urandom}};
+    Ctest_ch = {2{$urandom}};
 	
     //writing state to tmp buff for later comparison
     tmp_D_SC[0] = ON_OFF_otabg;
@@ -237,21 +238,19 @@ initial begin
     tmp_D_SC[188] = cmd_fsu;
     tmp_D_SC[764:189] = GAIN[575:0];
     tmp_D_SC[828:765] = Ctest_ch[63:0]; 
-	
+    
+	#150
 	state = 0;
 end
 
 always begin
-    #100  CK_SC = !CK_SC; //generating 5Ghz clock
+    #100  CK_in = !CK_in; //generating 5Ghz clock
 end
-
-always @(negedge CK_SC) begin //for every Clk signal we received one bit to from uut module
+always @(posedge CK_in) begin
     if(tmp_D_SC == read_D_SC) begin
 		TX_succes = 1; //if data is correct we set transmision flag to 1
-		#10
-		TX_succes = 0;
 		state = 1;
-		//random generating input bit state for test bench
+		
 		ON_OFF_otabg = $urandom_range(1,0);
 		ON_OFF_dac =  $urandom_range(1,0);
 		small_dac = $urandom_range(1,0);
@@ -261,7 +260,7 @@ always @(negedge CK_SC) begin //for every Clk signal we received one bit to from
 		inv_startCmptGray = $urandom_range(1,0);
 		ramp_8bit = $urandom_range(1,0);
 		ramp_10bit = $urandom_range(1,0);
-		mask_OR_ch = {4{random()}};
+		mask_OR_ch = {4{$urandom}};
 		cmd_CK_mux = $urandom_range(1,0);
 		d1_d2 = $urandom_range(1,0);
 		inv_discriADC = $urandom_range(1,0);
@@ -296,8 +295,8 @@ always @(negedge CK_SC) begin //for every Clk signal we received one bit to from
 		cmd_fsb = $urandom_range(1,0);
 		cmd_ss = $urandom_range(1,0);
 		cmd_fsu = $urandom_range(1,0);
-		GAIN = {18{random()}};
-		Ctest_ch = {2{random()}};
+		GAIN = {18{$urandom}};
+		Ctest_ch = {2{$urandom}};
 		
 		//writing state to tmp buff for later comparison
 		tmp_D_SC[0] = ON_OFF_otabg;
@@ -346,13 +345,14 @@ always @(negedge CK_SC) begin //for every Clk signal we received one bit to from
 		tmp_D_SC[188] = cmd_fsu;
 		tmp_D_SC[764:189] = GAIN[575:0];
 		tmp_D_SC[828:765] = Ctest_ch[63:0]; 
-		#10
+		#150
 		state = 0;
-	end
+    end
     else begin
-		read_D_SC[828] <= D_SC; //data is shifted out least-significant bit first
-		read_D_SC[827:0] <= read_D_SC[828:1]; //shift next bit into place
-	end
-	
+        TX_succes = 0;
+        read_D_SC[828] <= D_SC; //data is shifted out least-significant bit first
+        read_D_SC[827:0] <= read_D_SC[828:1]; //shift next bit into place
+    end
 end
+
 endmodule

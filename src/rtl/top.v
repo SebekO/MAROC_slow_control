@@ -60,16 +60,19 @@ input wire [575:0] GAIN, //[7:0][63:0] + [63:0]cmd_SUM
 input wire [63:0] Ctest_ch,
 
 output reg D_SC, //series output bits
-output wire RSTn_SC,
-output wire CK_SC //5GHZ clock out
+output reg RSTn_SC,
+output reg CK_SC //5GHZ clock out
 ); 
+
 reg [828:0] D_SC_buff = 0; //bufor for data frame
 
-always @(negedge CK_in, posedge rst) begin //for every Clk signal we sending one bit to MAROC
-	if(rst)
+always @(posedge CK_in, posedge rst) begin //for every Clk signal we sending one bit to MAROC
+	if(rst) begin
 		RSTn_SC = 1;
+		D_SC_buff = 0;
 		#50
 		RSTn_SC = 0;
+    end
 	else begin
 		if(state) begin
 			D_SC_buff[0] <= ON_OFF_otabg;
@@ -120,9 +123,9 @@ always @(negedge CK_in, posedge rst) begin //for every Clk signal we sending one
 			D_SC_buff[828:765] <= Ctest_ch[63:0];
 		end			
 		else begin
-			CK_SC = CK_in;
 			D_SC <= D_SC_buff[0]; //data is shifted out least-significant bit first
 			D_SC_buff[827:0] <= D_SC_buff[828:1]; //shift next bit into place
 		end
     end
+end
 endmodule
