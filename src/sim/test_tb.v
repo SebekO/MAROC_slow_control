@@ -20,6 +20,7 @@ reg ramp_10bit;
 // 128 bits mask
 reg [127:0] mask_or_ch;
 //reg [63:0] mask_or1_ch;
+//reg [63:0] mask_or2_ch;
 // 34 bits global configuration data
 reg cmd_ck_mux;
 reg d1_d2;
@@ -86,6 +87,8 @@ transmitter uut( //prototype unit under test function
 .ramp_8bit(ramp_8bit),
 .ramp_10bit(ramp_10bit),
 .mask_or_ch(mask_or_ch),
+//.mask_or1_ch(mask_or1_ch),
+//.mask_or2_ch(mask_or2_ch),
 .cmd_ck_mux(cmd_ck_mux),
 .d1_d2(d1_d2),
 .inv_discriadc(inv_discriadc),
@@ -154,6 +157,8 @@ initial begin
     ramp_8bit = $urandom_range(1,0);
     ramp_10bit = $urandom_range(1,0);
     mask_or_ch = {4{$urandom}};
+//    mask_or1_ch = {2{$urandom}};
+//    mask_or2_ch = {2{$urandom}};
     cmd_ck_mux = $urandom_range(1,0);
     d1_d2 = $urandom_range(1,0);
     inv_discriadc = $urandom_range(1,0);
@@ -249,6 +254,9 @@ end
 always @(posedge clk) begin
     if(tmp_d_sc == read_d_sc) begin
 		tx_succes = 1; //if data is correct we set transmision flag to 1
+		rst = 1;
+		#150
+		rst = 0;
 		state = 1;
 		
 		on_off_otabg = $urandom_range(1,0);
