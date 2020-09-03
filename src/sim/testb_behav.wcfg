@@ -16,32 +16,64 @@
       <Cursor1Time time="171000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="117"></NameColumnWidth>
-      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+      <NameColumnWidth column_width="258"></NameColumnWidth>
+      <ValueColumnWidth column_width="121"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="6" />
-   <wvobject fp_name="/testb/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
+   <WVObjectSize size="14" />
+   <wvobject fp_name="/testb/clk_in" type="logic">
+      <obj_property name="ElementShortName">clk_in</obj_property>
+      <obj_property name="ObjectShortName">clk_in</obj_property>
    </wvobject>
-   <wvobject fp_name="/testb/tx_succes" type="logic">
-      <obj_property name="ElementShortName">tx_succes</obj_property>
-      <obj_property name="ObjectShortName">tx_succes</obj_property>
+   <wvobject fp_name="/testb/state_out" type="array">
+      <obj_property name="ElementShortName">state_out[1:0]</obj_property>
+      <obj_property name="ObjectShortName">state_out[1:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/testb/state" type="logic">
-      <obj_property name="ElementShortName">state</obj_property>
-      <obj_property name="ObjectShortName">state</obj_property>
+   <wvobject fp_name="/testb/D_SC_out" type="logic">
+      <obj_property name="ElementShortName">D_SC_out</obj_property>
+      <obj_property name="ObjectShortName">D_SC_out</obj_property>
    </wvobject>
-   <wvobject fp_name="/testb/read_d_sc" type="array">
-      <obj_property name="ElementShortName">read_d_sc[828:0]</obj_property>
-      <obj_property name="ObjectShortName">read_d_sc[828:0]</obj_property>
+   <wvobject fp_name="/testb/RSTn_SC_out" type="logic">
+      <obj_property name="ElementShortName">RSTn_SC_out</obj_property>
+      <obj_property name="ObjectShortName">RSTn_SC_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testb/read_D_SC" type="array">
+      <obj_property name="ElementShortName">read_D_SC[828:0]</obj_property>
+      <obj_property name="ObjectShortName">read_D_SC[828:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/testb/tmp_d_sc" type="array">
       <obj_property name="ElementShortName">tmp_d_sc[828:0]</obj_property>
       <obj_property name="ObjectShortName">tmp_d_sc[828:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/testb/rstn_sc" type="logic">
-      <obj_property name="ElementShortName">rstn_sc</obj_property>
-      <obj_property name="ObjectShortName">rstn_sc</obj_property>
+   <wvobject fp_name="/testb/start_in" type="logic">
+      <obj_property name="ElementShortName">start_in</obj_property>
+      <obj_property name="ObjectShortName">start_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testb/reset_in" type="logic">
+      <obj_property name="ElementShortName">reset_in</obj_property>
+      <obj_property name="ObjectShortName">reset_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testb/uut/d_sc_buff" type="array">
+      <obj_property name="ElementShortName">d_sc_buff[828:0]</obj_property>
+      <obj_property name="ObjectShortName">d_sc_buff[828:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testb/uut/ctr" type="array">
+      <obj_property name="ElementShortName">ctr[9:0]</obj_property>
+      <obj_property name="ObjectShortName">ctr[9:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testb/uut/set_data" type="logic">
+      <obj_property name="ElementShortName">set_data</obj_property>
+      <obj_property name="ObjectShortName">set_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testb/uut/start_send" type="logic">
+      <obj_property name="ElementShortName">start_send</obj_property>
+      <obj_property name="ObjectShortName">start_send</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testb/uut/send_succes" type="logic">
+      <obj_property name="ElementShortName">send_succes</obj_property>
+      <obj_property name="ObjectShortName">send_succes</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testb/uut/clear_ctr" type="logic">
+      <obj_property name="ElementShortName">clear_ctr</obj_property>
+      <obj_property name="ObjectShortName">clear_ctr</obj_property>
    </wvobject>
 </wave_config>

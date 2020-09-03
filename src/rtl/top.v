@@ -71,13 +71,15 @@ localparam PREPARE_TO_SEND = 1;
 localparam SENDING = 2;
 localparam FINAL = 3;
 
-reg [9:0] ctr = 0;
+reg [9:0] ctr;
 reg [1:0] state;
 reg [1:0] nstate;
+
 reg start_send;
 reg	clear_ctr;
-reg	send_succes;
 reg set_data;
+reg	send_succes;
+
 
 reg [828:0] d_sc_buff = 0; //buffer for data frame
 
@@ -87,7 +89,8 @@ always @* begin
 	clear_ctr = 0;
 	case(state)
 		IDLE: begin
-			if(start_in) begin
+            RSTn_SC_out = 1;
+            if(start_in) begin
 				nstate = PREPARE_TO_SEND;
 			end
 			else begin
@@ -132,10 +135,9 @@ always @(posedge clk_in, posedge reset_in) begin //for every clk signal we sendi
 		state <= IDLE;
 	end
 	else begin
-		RSTn_SC_out = 1;
+		RSTn_SC_out = 0;
 		state <= nstate;
 		if(set_data) begin
-			RSTn_SC_out = 0;
 			d_sc_buff[0] <= ON_OFF_otabg_in;
 			d_sc_buff[1] <= ON_OFF_dac_in;
 			d_sc_buff[2] <= small_dac_in;
@@ -182,6 +184,7 @@ always @(posedge clk_in, posedge reset_in) begin //for every clk signal we sendi
 			d_sc_buff[188] <= cmd_fsu_in;
 			d_sc_buff[764:189] <= GAIN_in[575:0];
 			d_sc_buff[828:765] <= Ctest_ch_in[63:0];
+			ctr = 0;
 		end
 		else if (start_send) begin
 			D_SC_out <= d_sc_buff[0]; //data is shifted out least-significant bit first
