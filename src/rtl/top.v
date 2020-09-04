@@ -89,7 +89,6 @@ always @* begin
 	clear_ctr = 0;
 	case(state)
 		IDLE: begin
-            RSTn_SC_out = 1;
             if(start_in) begin
 				nstate = PREPARE_TO_SEND;
 			end
@@ -98,6 +97,7 @@ always @* begin
 			end
 		end
 		PREPARE_TO_SEND: begin
+            RSTn_SC_out = 1;
 			set_data = 1;
 			nstate = SENDING;
 		end
@@ -114,7 +114,9 @@ always @* begin
 		FINAL: begin
 			start_send = 0;
 			clear_ctr = 1;
+			send_succes = 0;
 			if(start_in) begin
+                clear_ctr = 0;
 				nstate = PREPARE_TO_SEND;
 			end
 			else begin
@@ -132,6 +134,7 @@ end
 always @(posedge clk_in, posedge reset_in) begin //for every clk signal we sending one bit to maroc
 	state_out <= state;
 	if(reset_in) begin
+	    RSTn_SC_out = 1;
 		state <= IDLE;
 	end
 	else begin
