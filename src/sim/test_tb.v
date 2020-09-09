@@ -347,7 +347,8 @@ end
         tmp_d_sc[188] = cmd_fsu_in;
         tmp_d_sc[764:189] = GAIN_in[575:0];
         tmp_d_sc[828:765] = Ctest_ch_in[63:0];
-
+        #200 start_in <= 1;
+        #200 start_in <= 0;
     end
     end
 endmodule
