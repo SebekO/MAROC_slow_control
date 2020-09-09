@@ -4,11 +4,6 @@ reg clk_in; //5MHz clock in
 reg reset_in;
 reg start_in;
 
-wire D_SC_out; //series output bits
-wire RSTn_SC_out;
-wire CK_SC_out; //5MHZ clock out
-wire [1:0] state_out; //state of machine
-
 reg ON_OFF_otabg_in;
 reg ON_OFF_dac_in; 
 reg small_dac_in;
@@ -56,9 +51,15 @@ reg cmd_fsu_in;
 reg [575:0] GAIN_in;
 reg [63:0] Ctest_ch_in;
 
+wire D_SC_out; //series output bits
+wire RSTn_SC_out;
+wire CK_SC_out; //5MHZ clock out
+wire [1:0] state_out; //state of machine
+
+//local var
 reg [828:0] tmp_d_sc; //tmp buffor which include generated frame for comparison 
 reg [828:0] read_D_SC;
-reg tx_succes; //transmisiosn succes flag
+
 
 transmitter uut( //prototype unit under test function
 .clk_in(clk_in),
@@ -116,7 +117,6 @@ transmitter uut( //prototype unit under test function
 .RSTn_SC_out(RSTn_SC_out),
 .CK_SC_out(CK_SC_out),
 .state_out(state_out)
-
 );
 
 
@@ -221,24 +221,39 @@ initial begin
     tmp_d_sc[188] = cmd_fsu_in;
     tmp_d_sc[764:189] = GAIN_in[575:0];
     tmp_d_sc[828:765] = Ctest_ch_in[63:0];
+    
     reset_in <= 1;
     #200 reset_in <= 0;
+    
     #100 start_in <= 1;
     #100 start_in <= 0;
+    
+    #1000 reset_in <= 1;
+    #200 reset_in <= 0; 
+    
+    #100 start_in <= 1;
+    #100 start_in <= 0;
+    
+    #1000 start_in <= 1;
+    #100 start_in <= 0; 
 end
 always begin
     #100  clk_in = !clk_in; //generating 5ghz clock
 end
-
-always @(posedge clk_in) begin
+always @(posedge CK_SC_out) begin
     if(state_out == 2) begin
         read_D_SC[828] <= D_SC_out;
         read_D_SC[827:0] <= read_D_SC[828:1];
     end
 end
 always @* begin
+    if (!RSTn_SC_out) begin
+      read_D_SC[828:0] = 0;
+    end
+end
+    always @* begin 
     if(state_out == 3) begin
-        read_D_SC[828:0] = 0;
+        
         ON_OFF_otabg_in = $urandom_range(1,0);
         ON_OFF_dac_in =  $urandom_range(1,0);
         small_dac_in = $urandom_range(1,0);
@@ -332,9 +347,7 @@ always @* begin
         tmp_d_sc[188] = cmd_fsu_in;
         tmp_d_sc[764:189] = GAIN_in[575:0];
         tmp_d_sc[828:765] = Ctest_ch_in[63:0];
-        
-        #100 start_in <= 1;  
-        #100 start_in <= 0;     
+
     end
     end
 endmodule

@@ -225,15 +225,15 @@ module transmitter(
       ctr <= 0;
     end
     else begin
-      send_succes <= 0;
       if((ctr < 828) && start_send) begin
         ctr <= ctr + 1; 
       end
-      else if(clear_ctr) begin
-        ctr <= 0;
-      end
-      else begin
+      else if((ctr >= 828) && start_send) begin
         send_succes <= 1;
+      end
+      else if(clear_ctr) begin
+        send_succes <= 0;
+        ctr <= 0;
       end
     end
   end

@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="171000001fs"></ZoomEndTime>
-      <Cursor1Time time="171000000fs"></Cursor1Time>
+      <ZoomStartTime time="26666666fs"></ZoomStartTime>
+      <ZoomEndTime time="198666667fs"></ZoomEndTime>
+      <Cursor1Time time="168139203fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="258"></NameColumnWidth>
-      <ValueColumnWidth column_width="121"></ValueColumnWidth>
+      <NameColumnWidth column_width="255"></NameColumnWidth>
+      <ValueColumnWidth column_width="116"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="14" />
+   <WVObjectSize size="15" />
    <wvobject fp_name="/testb/clk_in" type="logic">
       <obj_property name="ElementShortName">clk_in</obj_property>
       <obj_property name="ObjectShortName">clk_in</obj_property>
@@ -55,6 +55,10 @@
    <wvobject fp_name="/testb/uut/d_sc_buff" type="array">
       <obj_property name="ElementShortName">d_sc_buff[828:0]</obj_property>
       <obj_property name="ObjectShortName">d_sc_buff[828:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/testb/uut/d_sc_buff2" type="array">
+      <obj_property name="ElementShortName">d_sc_buff2[828:0]</obj_property>
+      <obj_property name="ObjectShortName">d_sc_buff2[828:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/testb/uut/ctr" type="array">
       <obj_property name="ElementShortName">ctr[9:0]</obj_property>
